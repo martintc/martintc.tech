@@ -1,21 +1,27 @@
 # Content
 
-AUTHOR_NAME = "Author"
-AUTHOR_EMAIL = "author@example.org"
-SITE_TITLE = "Site Title"
-SITE_TAGLINE = "Site Tagline"
+AUTHOR_NAME = "Todd Martin"
+AUTHOR_EMAIL = "kj4ntv@gmail.com"
+SITE_TITLE = "My Blog"
+SITE_TAGLINE = "For software engineering and technology"
 LOCALE = "en_US.utf-8"
 
 POSTS_PER_PAGE = 10
 POSTS_PER_PAGE_ATOM = 10
 
 POSTS = \
-	post2 \
-	post1 \
-	$(NULL)
-
-PAGES = \
-	about \
+	ravenports-dwm \
+	rust-ntp \
+	crossterm-shapes \
+	fs-exploration \
+	implementing-uart \
+	embedded-hello-world \
+	getting-started-embedded-c \
+	intro-to-sdl \
+	intro-to-pointers-3 \
+	intro-to-pointers-2 \
+	intro-to-pointers-1 \
+	introduction \
 	$(NULL)
 
 ASSETS = \

@@ -1,0 +1,32 @@
+TITLE: Introduction
+DATE: 2022-08-21 19:41:02
+-------------------------
+
+Hello there, just wanted to create a little bit of a post to introduce myself to any readers of this blog. This is one of many attempts I have made to try to keep a consistent blog maintained, and hopefully, this one sticks. In the past I have used wordpress and other various technologies and they have not stuck with me. This attempt is being made using hugo, so hopefully this one is the charm.
+
+A little bit about myself. I started getting into computers and computer science when I was roughly 14. This was around the time I learned about Linux and decided to give it a go on my little Acer Aspire One netbook  that I had at the time. The distribution was Ubuntu. From there, I began experimenting with some programming in C and scripting in Python and also dabbling in Java. Graduating highschool, I at first thought I was going to attend the four year university I was accepted into so I could study Computer Science. However, life did not end up working out that way. Instead of taking out loans, I decided to go spend some time in the Navy. During my five years, I got married and had two kids. After getting out, I went to Arizona State University on my Post 9/11 GI Bill for Software Engineering. During that time, I worked full time in chemical manufacturing, going to school, raising kids and doing some open source work. Now, I am graduated and working as a Software engineering at a small company making a Point of Sale system in the dotnet ecosystem.
+
+My interest in tech is varied. While I 'pay the bills' writing dotnet code on Window, Linux and UNIX are still my primary go to for my home systems. Mainly, I have a passion for the BSD Family of operating systems. Even more specifically, I tend to favor NetBSD of the group. 
+
+I program in various languages.
+
+- Java
+- C
+- Rust
+- Go
+- C#
+
+My interests in coding are embedded systems, low level, and distributed systems. I also want to explore writing games and various other areas of computer science and software engineering. 
+
+I do try to do a lot in the open source communtiy since it was so instrumental to my curiosity with computers and how much I have learned. Just a few things I have worked on:
+
+- Helped port an aspect of Ravenport's binary package manager to NetBSD.
+- Full BSD support in the os_info rust crate that is a dependency for many Rust projects such as Cargo.
+- Various features for Comtrya, a configuration management system written in Rust
+
+My hopes for this blog are two part. First part is, I always find that the best to learn something is to force one's self to teach it. By learning and making myself document what I learn, I hope to cement my own knowledge even more and attain a higher level of understanding. The second part is, it is no fun to keep information to one's self. I want to share what I am working on in hopes that someone else may find it interest and learn something new. I also want to document things I get questions on all the time and try to write blog posts to answer those questions. It helps my own knowledge, but allows me to help others without explaining it and over again. If I can wrap an explanation up into a good blog post, all I need to do is give them the link. An example of this was helping class mates with understanding pointers in C in my operating systems class. I wrote three posts on a previous blog and handed out those links and helped multiple people understand the content without having to spend time explaining it individually to each person.
+
+So that pretty much sums up enough about me and my goals with this. Some things I look forward to posting on soon:
+
+- A post regarding low level raspberry pi 4b programming
+- Dabbling in some game development with SDL and C

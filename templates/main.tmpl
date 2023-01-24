@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="{{ SITE_TAGLINE }}">
+    <title>{{ SITE_TITLE }}{% block entry %}{% ifdef TITLE %} - {{ TITLE }}{% endif %}{% endblock %}{% block listing_once %} - {{ SITE_TAGLINE }}{% endblock %}</title>
+    <link href="{{ BASE_URL }}/assets/bootstrap.min.css" rel="stylesheet" type="text/css">
+    <link href="{{ BASE_URL }}/assets/custom.css" rel="stylesheet" type="text/css">
+    <link href="{{ BASE_URL }}/atom.xml" rel="alternate" type="application/atom+xml" title="{{ SITE_TITLE }}" />
+  </head>
+  <body>
+    <div class="navbar navbar-expand-lg fixed-top navbar-dark bg-primary">
+      <div class="container">
+        <a class="navbar-brand" href="{{ BASE_URL }}/">{{ SITE_TITLE }}</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+          <ul class="navbar-nav ml-auto">
+            <li class="nav-item{% if MENU == "blog" %} active{% endif %}">
+              <a class="nav-link" href="{{ BASE_URL }}/">Blog</a>
+            </li>
+            <li class="nav-item{% if MENU == "about" %} active{% endif %}">
+              <a class="nav-link" href="{{ BASE_URL }}/about/">About</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          {% block listing %}
+          <article>
+            <h3><a href="{{ BASE_URL }}/post/{{ FILENAME }}/">{{ TITLE }}</a></h3>
+            {{ CONTENT }}
+            <div class="metadata card bg-light mb-4">
+              <div class="card-body p-2">
+                Author: <a href="mailto:{{ AUTHOR_EMAIL }}">{{ AUTHOR_NAME }}</a><br />
+                {% ifdef DATE_FORMATTED %}Published on: {{ DATE_FORMATTED }}<br />{% endif %}
+                <a href="{{ BASE_URL }}/post/{{ FILENAME }}/">Permalink</a>
+              </div>
+            </div>
+          </article>
+          {% endblock %}
+          {% block listing_once %}
+          <ul class="pagination justify-content-center">
+            <li class="page-item{% ifndef PREVIOUS_PAGE %} disabled{% endif %}">
+              <a class="page-link" href="{% ifdef PREVIOUS_PAGE %}{{ BASE_URL }}/page/{{ PREVIOUS_PAGE }}/{% else %}#{% endif %}">
+                &larr; Newer
+              </a>
+            </li>
+            <li class="page-item{% ifndef NEXT_PAGE %} disabled{% endif %}">
+              <a class="page-link" href="{% ifdef NEXT_PAGE %}{{ BASE_URL }}/page/{{ NEXT_PAGE }}/{% else %}#{% endif %}">
+                Older &rarr;
+              </a>
+            </li>
+          </ul>
+          {% endblock %}
+          {% block entry %}
+          <article>
+            {% ifdef TITLE %}<h3>{{ TITLE }}</h3>{% endif %}
+            {{ CONTENT }}
+            {% ifdef IS_POST %}
+            <div class="metadata card bg-light mb-4">
+              <div class="card-body p-2">
+                Author: <a href="mailto:{{ AUTHOR_EMAIL }}">{{ AUTHOR_NAME }}</a><br />
+                {% ifdef DATE_FORMATTED %}Published on: {{ DATE_FORMATTED }}<br />{% endif %}
+                <a href="{{ BASE_URL }}/post/{{ FILENAME }}/">Permalink</a>
+              </div>
+            </div>
+            {% endif %}
+          </article>
+          {% endblock %}
+        </div>
+      </div>
+    </div>
+    <hr>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          <p class="copyright text-muted">&copy; <a href="mailto:{{ AUTHOR_EMAIL }}">{{ AUTHOR_NAME }}</a></p>
+        </div>
+      </div>
+    </div>
+    <script src="{{ BASE_URL }}/assets/jquery.slim.min.js"></script>
+    <script src="{{ BASE_URL }}/assets/bootstrap.bundle.min.js"></script>
+  </body>
+</html>

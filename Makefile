@@ -2,7 +2,7 @@
 
 AUTHOR_NAME = "Todd Martin"
 AUTHOR_EMAIL = "kj4ntv@gmail.com"
-SITE_TITLE = "My Blog"
+SITE_TITLE = "Todd's blog"
 SITE_TAGLINE = "For software engineering and technology"
 LOCALE = "en_US.utf-8"
 
@@ -125,8 +125,6 @@ $(OUTPUT_DIR)/atom.xml: $(POSTS_LIST) templates/atom.tmpl Makefile
 		$(POSTS_LIST)
 
 IS_POST = 0
-
-$(OUTPUT_DIR)/about/index.html: MENU = about
 
 $(OUTPUT_DIR)/post/%/index.html: MENU = blog
 $(OUTPUT_DIR)/post/%/index.html: IS_POST = 1

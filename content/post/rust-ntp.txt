@@ -11,21 +11,21 @@ Something that I thought would be interesting is to dabble a little bit with som
 
 The primary packet for NTPv4 has one form. It consists of 48 bytes of data. Or atleat, those are the parts of the packet we care about. There are some option fields, however, we will not concern ourselves with this. The information for What we care about as far as the packet in RFC 5905 is located in page 17, chapter 7.
 
-| Field               | Size    |
-|:--------------------|:--------|
-| LI                  | 2 bits  |
-| VN                  | 3 bits  |
-| Mode                | 3 bits  |
-| Stratum             | 1 byte  |
-| Poll                | 1 byte  |
-| Precision           | 1 byte  |
-| Root delay          | 4 bytes |
-| Root Dispersion     | 4 bytes |
-| Reference ID        | 4 bytes |
-| Reference Timestamp | 4 bytes |
-| Origin Timestamp    | 4 bytes |
-| Receive Timestamp   | 4 bytes |
-| Transmit Timespace  | 4 bytes |
+    | Field               | Size    |
+    |:--------------------|:--------|
+    | LI                  | 2 bits  |
+    | VN                  | 3 bits  |
+    | Mode                | 3 bits  |
+    | Stratum             | 1 byte  |
+    | Poll                | 1 byte  |
+    | Precision           | 1 byte  |
+    | Root delay          | 4 bytes |
+    | Root Dispersion     | 4 bytes |
+    | Reference ID        | 4 bytes |
+    | Reference Timestamp | 4 bytes |
+    | Origin Timestamp    | 4 bytes |
+    | Receive Timestamp   | 4 bytes |
+    | Transmit Timespace  | 4 bytes |
 
 First is LI, which is short for *Leap Indicator*. This will indicate if there anything we need to concern ourselves about a leap second being added or subtracted. This takes up the first 2 bits. Next is VN, *Version Number*, encoded in 3 bits. After that is the *Mode* for 3 bits. When handling this packet, the first 3 fields will fit in an unsigned 8-bit integer, in rust as a u8.
 
@@ -41,15 +41,14 @@ For the remaining fields, I suggest taking a look at *RFC 5905*.
 
 # main.rs
 
-```rs
-use std::net::UdpSocket;
+  use std::net::UdpSocket;
 
-use rs_sntp::ntp_client::{write_data_packet, read_data_packet, NtpDataPacket};
+  use rs_sntp::ntp_client::{write_data_packet, read_data_packet, NtpDataPacket};
 
-const HOST: &str = "0.pool.ntp.org";
-const PORT: &str = "123";
+  const HOST: &str = "0.pool.ntp.org";
+  const PORT: &str = "123";
 
-fn main() {
+  fn main() {
 
     let mut packet = NtpDataPacket::new();
     
@@ -72,11 +71,7 @@ fn main() {
 
     println!("{:?}", packet);
 
-
-
-}
-
-```
+  }
 
 Here is the main source file of the program. In the program we create an NtpDataPacket which is a structure I made to represent the packet for NTP. I also have some constants set for the host and port of one of the many publically availiable NTP servers. NTP uses UDP, so a UDPSocket is created, binded and connected. Next, write to the socket, which will be covered later in this article. Read the response, parse and display. Pretty straight forward and simple. THe magic for the protocol happens in the `ntp_client.rs` file.
 
@@ -84,17 +79,15 @@ Here is the main source file of the program. In the program we create an NtpData
 
 Really simple `lib.rs` file
 
-```rs
-pub mod ntp_client;
-```
+       pub mod ntp_client;
+
 
 # ntp_client.rs
 
-```rs
-use std::net::UdpSocket;
+  use std::net::UdpSocket;
 
-#[derive(Debug)]
-pub struct NtpDataPacket {
+  #[derive(Debug)]
+  pub struct NtpDataPacket {
     li_vn_mode: u8,
     strat: u8, 
     poll: u8,
@@ -110,15 +103,15 @@ pub struct NtpDataPacket {
     recv_ts_fraction: u32,
     tx_ts_seconds: u32,
     tx_ts_fraction: u32,
-}
+  }
 
-pub fn write_data_packet(socket: &UdpSocket) {
+  pub fn write_data_packet(socket: &UdpSocket) {
     let mut buf = [0; 48];
     buf[0] = 0x1b;
     socket.send(&buf).expect("Issue with sending to server");
-}
+  }
 
-pub fn read_data_packet(socket: &UdpSocket) -> [u8; 48] {
+  pub fn read_data_packet(socket: &UdpSocket) -> [u8; 48] {
     let mut buf: [u8; 48] = [0; 48];
     if let Ok(r) = socket.recv(&mut buf) { 
         println!("Received: {} bytes", r);
@@ -127,9 +120,9 @@ pub fn read_data_packet(socket: &UdpSocket) -> [u8; 48] {
     }
 
     return buf;
-}
+  }
 
-impl NtpDataPacket {
+  impl NtpDataPacket {
 
     pub fn new() -> Self {
         Self { li_vn_mode: 0, strat: 0, poll: 0, prec: 0, root_delay: 0, root_dispersion: 0, ref_id: 0, ref_time_seconds: 0, ref_time_fraction: 0, origin_ts_seconds: 0, origin_ts_fraction: 0, recv_ts_seconds: 0, recv_ts_fraction: 0, tx_ts_seconds: 0, tx_ts_fraction: 0 }
@@ -186,8 +179,7 @@ impl NtpDataPacket {
         self.tx_ts_fraction |= resp[47] as u32;
     }
 
-}
-```
+  }
 
 ## NtpDataPacket
 
@@ -197,18 +189,16 @@ This is a structure that defines the packet for the protocol. Some of the fields
 
 In the send function, before sending the 48 byte packet, the first byte is set to value `0x1b`. This is `0b00011011`. This will set the appropriate LI, VN and Mode bits.
 
-| Key  | Value | Meaning                                                                     |
-|:-----|:------|-----------------------------------------------------------------------------|
-| LI   | 00    | This is for server use, server decide is leap second is inserted or deleted |
-| VN   | 011   | Version number, set to 3 in this example, could also be set to 4            |
-| Mode | 011   | Mode is set to 3, which means client mode                                   |
+   | Key  | Value | Meaning                                                                     |
+   |:-----|:------|-----------------------------------------------------------------------------|
+   | LI   | 00    | This is for server use, server decide is leap second is inserted or deleted |
+   | VN   | 011   | Version number, set to 3 in this example, could also be set to 4            |
+   | Mode | 011   | Mode is set to 3, which means client mode                                   |
 
 The version and mode need to be set in order to get a response.
 
 # Output
 
-```
-NtpDataPacket { li_vn_mode: 28, strat: 2, poll: 3, prec: 236, root_delay: 3802, root_dispersion: 1545, ref_id: 2886875149, ref_time_seconds: 3877304791, ref_time_fraction: 1240575520, origin_ts_seconds: 0, origin_ts_fraction: 0, recv_ts_seconds: 3877306283, recv_ts_fraction: 2288430625, tx_ts_seconds: 3877306283, tx_ts_fraction: 2288611839 }
-```
+	NtpDataPacket { li_vn_mode: 28, strat: 2, poll: 3, prec: 236, root_delay: 3802, root_dispersion: 1545, ref_id: 2886875149, ref_time_seconds: 3877304791, ref_time_fraction: 1240575520, origin_ts_seconds: 0, origin_ts_fraction: 0, recv_ts_seconds: 3877306283, recv_ts_fraction: 2288430625, tx_ts_seconds: 3877306283, tx_ts_fraction: 2288611839 }
 
 Above is the output from the server. The primary field toget the time is the `tx_ts_seconds` field. However, converting that will not give the current time. `3877306283` yields a date and time of `November 12th, 2092 5:31:23 AM.` So, how do we get the correct time? We substract 70 years worth of seconds from the time. This is 1900 to the UNIX epoch of Janruary 1st, 1970. 70 years in seconds is `2208988800`. This will give us the proper time.

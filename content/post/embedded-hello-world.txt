@@ -35,9 +35,7 @@ In embedded development, the iconic hello world is a little different. With most
 
 One main component on this program will be exploring the idea of the cyclic executive. In the first tutorial, we had just a while loop that looked like so:
 
-```c
-while(1) {}
-```
+    while(1) {}
 
 This cause an infinite loop so that the return statement was never hit and the program's life did not end. If we let the program run to completion, the Atmega device would hit the reset vector and essentially start over. This is not preferable in embedded development since the idea is we can create a device and it just does it's job indefinitely. We can not expect users to hook it up and tamper with the code.
 
@@ -59,126 +57,113 @@ The code implements a simplified device driver design. In future articles, we wi
 
 ### Makefile
 
-```sh
-CC = avr-gcc
-CC_FLAGS = -Os -DF_CPU16000000UL -mmcu=atmega328p
-LINK_FLAGS = -mmcu=atmega328p
-OBJ_CPY = avr-objcopy
-OBJ_CPY_FLAGS = -O ihex -R .eeprom
-AVR_DUDE = avrdude
-AVR_DUDE_FLAGS = -F -V -c arduino -p ATMEGA328P -P
+    CC = avr-gcc
+    CC_FLAGS = -Os -DF_CPU16000000UL -mmcu=atmega328p
+    LINK_FLAGS = -mmcu=atmega328p
+    OBJ_CPY = avr-objcopy
+    OBJ_CPY_FLAGS = -O ihex -R .eeprom
+    AVR_DUDE = avrdude
+    AVR_DUDE_FLAGS = -F -V -c arduino -p ATMEGA328P -P
 
 
-all: compile link cpy flash
+    all: compile link cpy flash
 
-compile:
-    ${CC} ${CC_FLAGS} -c -o led.o led.c
-    ${CC} ${CC_FLAGS} -c -o main.o main.c
+    compile:
+	${CC} ${CC_FLAGS} -c -o led.o led.c
+    	${CC} ${CC_FLAGS} -c -o main.o main.c
 
-link:
-    ${CC} ${LINK_FLAGS} *.o -o led
+    link:
+	${CC} ${LINK_FLAGS} *.o -o led
 
-cpy:
-    ${OBJ_CPY} ${OBJ_CPY_FLAGS} led led.hex
+    cpy:
+        ${OBJ_CPY} ${OBJ_CPY_FLAGS} led led.hex
 
-flash:
-    sudo avrdude -F -V -c arduino -p ATMEGA328 -P /dev/tty.usbserial-140 -b 57600 -U flash:w:led.hex
-```
+    flash:
+        sudo avrdude -F -V -c arduino -p ATMEGA328 -P /dev/tty.usbserial-140 -b 57600 -U flash:w:led.hex
 
 ### main.c
 
-```c
-#include "led.h"
+    #include "led.h"
 
-void delay() {
-  for (volatile int i = 0; i < 1000; i++) {
-    for (volatile long j = 0; j < 32; j++) {
+    void delay() {
+      for (volatile int i = 0; i < 1000; i++) {
+      	  for (volatile long j = 0; j < 32; j++) {
+    	  }
+      }
     }
-  }
-}
 
-int main () {
+    int main () {
 
-  /* initialize LED driver */
-  init_led();
+        /* initialize LED driver */
+        init_led();
 
-  while(1) {
+  	while(1) {
 
-    led_toggle();
-    delay();
+        led_toggle();
+        delay();
 
-  }
+    }
 
-  return 0;
-}
-```
+    return 0;
+    }
  
 
 ### led.h
 
-```c
-#ifndef LED_H
-#define LED_H
+    #ifndef LED_H
+    #define LED_H
 
-void init_led();
+    void init_led();
 
-void led_toggle();
+    void led_toggle();
 
-#endif
-```
+    #endif
  
 
 ### led.c
 
-```c
-#define DDRB ((*(volatile unsigned char*)0x24))
-#define PORTB ((*(volatile unsigned char*)0x25))
-#define PINB ((*(volatile unsigned char*)0x23))
+    #define DDRB ((*(volatile unsigned char*)0x24))
+    #define PORTB ((*(volatile unsigned char*)0x25))
+    #define PINB ((*(volatile unsigned char*)0x23))
 
-void init_led() {
-  DDRB = 0x20;
-}
+    void init_led() {
+    	 DDRB = 0x20;
+    }
 
-void led_toggle() {
-  PINB = 0x20;
-}
-
-```
- 
+    void led_toggle() {
+    	 PINB = 0x20;
+    }
 
 ## Terminal output from running make
 
-```sh
-Device-Driver-Design % make
-avr-gcc -Os -DF_CPU16000000UL -mmcu=atmega328p -c -o led.o led.c
-avr-gcc -Os -DF_CPU16000000UL -mmcu=atmega328p -c -o main.o main.c
-avr-gcc -mmcu=atmega328p *.o -o led
-avr-objcopy -O ihex -R .eeprom led led.hex
-# 57600
-sudo avrdude -F -V -c arduino -p ATMEGA328 -P /dev/tty.usbserial-140 -b 57600 -U flash:w:led.hex
+   Device-Driver-Design % make
+   avr-gcc -Os -DF_CPU16000000UL -mmcu=atmega328p -c -o led.o led.c
+   avr-gcc -Os -DF_CPU16000000UL -mmcu=atmega328p -c -o main.o main.c
+   avr-gcc -mmcu=atmega328p *.o -o led
+   avr-objcopy -O ihex -R .eeprom led led.hex
+   # 57600
+   sudo avrdude -F -V -c arduino -p ATMEGA328 -P /dev/tty.usbserial-140 -b 57600 -U flash:w:led.hex
 
-avrdude: AVR device initialized and ready to accept instructions
+   avrdude: AVR device initialized and ready to accept instructions
 
-Reading | ################################################## | 100% 0.00s
+   Reading | ################################################## | 100% 0.00s
 
-avrdude: Device signature = 0x1e950f (probably m328p)
-avrdude: Expected signature for ATmega328 is 1E 95 14
-avrdude: NOTE: "flash" memory has been specified, an erase cycle will be performed
+   avrdude: Device signature = 0x1e950f (probably m328p)
+   avrdude: Expected signature for ATmega328 is 1E 95 14
+   avrdude: NOTE: "flash" memory has been specified, an erase cycle will be performed
          To disable this feature, specify the -D option.
-avrdude: erasing chip
-avrdude: reading input file "led.hex"
-avrdude: input file led.hex auto detected as Intel Hex
-avrdude: writing flash (264 bytes):
+   avrdude: erasing chip
+   avrdude: reading input file "led.hex"
+   avrdude: input file led.hex auto detected as Intel Hex
+   avrdude: writing flash (264 bytes):
 
-Writing | ################################################## | 100% 0.12s
+   Writing | ################################################## | 100% 0.12s
 
-avrdude: 264 bytes of flash written
+   avrdude: 264 bytes of flash written
 
-avrdude: safemode: Fuses OK (E:00, H:00, L:00)
+   avrdude: safemode: Fuses OK (E:00, H:00, L:00)
 
-avrdude done.  Thank you.
-
-```
+   avrdude done.  Thank you.
 
 ## main.c walk through
 

@@ -14,124 +14,99 @@ First off the bat. It is helpful to pick up some library to couple with OpenGL s
 
 In order to initailize SDL, we can call the following function.
 
-```c
-SDL_Init(SDL_INIT_VIDEO);
-```
+   SDL_Init(SDL_INIT_VIDEO);
 
 The above will initialize SDL in video mode, which is the least we need to render graphics. It is also important to note that we will need to include the SDL library. This will entail ensuring that we have the library installed. On Fedora, the following is needed to get that.
 
-```shell
-sudo dnf isntall SDL2 SDL2-devel
-```
+  sudo dnf isntall SDL2 SDL2-devel
 
 This will place the libary in the appropriate place. Now we need a simple makefile.
 
-```
-all:
-	gcc -c main ./src*.c -lSDL2
-```
+  all:
+    gcc -c main ./src*.c -lSDL2
 
 Then to make sure that the headers are included. So far, we have this for our initial SDL2 program.
 
-```c
-#include <stdio.h>
-#include <SDL2/SDL.h>
+  #include <stdio.h>
+  #include <SDL2/SDL.h>
 
-int main(void) {
-	SDL_Iinit(SDL_INIT_VIDEO);
-	
-	return 0;
-}
-```
+  int main(void) { 
+      SDL_Init(SDL_INIT_VIDEO);
+      return 0;
+  }
 
 Since we want to make sure that no errors have occured, we can see from the documentation that on `success`, the init function in SDL2 will return 0. In the event of an error, it will return a value less than zero. Also, a build in function can be taken advantage of to get details on the error. This is the `SDL_GetError` function that returns a `char*`.
 
-```c
-#include <stdio.h>
-#include <SDL2/SDL.h>
+  #include <stdio.h>
+  #include <SDL2/SDL.h>
 
-int main(void) {
-	if (SDL_Init(SDL_INIT_VIDEO) < 0) {
-		fprintf(stderr, "Error initializing SDL: %s\n.", SDL_GetError());
-		return 0;
-	}
-
-	return 0;
-}
-
-```
+  int main(void) {
+    if (SDL_Init(SDL_INIT_VIDEO) < 0) {
+      fprintf(stderr, "Error initializing SDL: %s\n.", SDL_GetError());
+      return 0;
+    }
+    return 0;
+  }
 
 Next, creating a window. 
 
-```c
-SDL_Window *window = SDL_CreateWindow(
-	"A title",
-	SDL_WINDOWPOS_UNDEFINED,
-	SDL_WINDOWPOS_UNDEFINED,
-	800,
-	600,
-	0
-);
-```
+  SDL_Window *window = SDL_CreateWindow(
+    "A title",
+    SDL_WINDOWPOS_UNDEFINED,
+    SDL_WINDOWPOS_UNDEFINED,
+    800,
+    600,
+    0
+  );
 
 The above code will create a window in SDL. It takes a variety of arguments. The first being some `char*` to represent the title of the window. The next two arguments are coordinated along the X and Y of a starting position for the window. Here, I don't really care where the window appears, so I pass in `SDL_WINDOWPOS_UNDEFINED`. The next two arguments are the width and height of the created window. Lastly, this argument is for setting various features. I don't really need any, so I just pass 0. However, when it comes to using OpenGL, a flag will need to be passed in there. Also, multiple flags can be passed by `ORing` them. 
 
 Next is initializing the renderer.
 
-```c
-SDL_Renderer *renderer = SDL_CreatRenderer(window);
-```
+  SDL_Renderer *renderer = SDL_CreatRenderer(window);
 
 Creating the renderer is fairly easy. Just pass in the window object at initialization.
 
 One thing we are going to want to go is some error handling so that way if the program crashes, we know where it took place. After initializing either the renderer or the window, we can add in the following code, replacing the component being checked.
 
-```c
-if (window == NULL) {
-	fprintf(strderr, "Error initializing SDL Window: %s\n", SDL_GetError());
-	return 0;
-}
-```
+  if (window == NULL) {
+     fprintf(strderr, "Error initializing SDL Window: %s\n", SDL_GetError());
+     return 0;
+  }
 
 All in all, the source code looks like so.
 
-```c
-#include <std.io.h>
-#include <SDL2/SDL.h>
+  #include <std.io.h>
+  #include <SDL2/SDL.h>
 
-int main(void) }
-	if (SDL_Init(SDL_INIT_VIDEO) < 0) {
-		fprintf(stderr, "Error initializing SDL: %s\n", SDL_GetError());
-		return 0;
-	}
-	
-	SDL_Window *window = SDL_CreateWindow(
-		"My Title",
-		SDL_WINDOWPOS_UNDEFINED,
-		SDL_WINDOWPOS_UNDEFINED,
-		800,
-		600,
-		0
-	);
-	if (window == NULL) {
-		fprintf(stderr, "Eror initializing SDL Window: %s\n", SDL_GetError());
-		return 0;
-	}
-	
-	SDL_Renderer  *renderer = SDl_CreateRenderer(window);
-	if (renderer == NULL) {
-		fprintf(stderr, "Error initializing SDL Renderer: %s\n", SDL_GetError());
-		return 0;
-	}
-	
-	return 0;
-}
-```
+  int main(void) {
+    if (SDL_Init(SDL_INIT_VIDEO) < 0) {
+      fprintf(stderr, "Error initializing SDL: %s\n", SDL_GetError());
+      return 0;
+    }	
+    SDL_Window *window = SDL_CreateWindow(
+      "My Title",
+      SDL_WINDOWPOS_UNDEFINED,
+      SDL_WINDOWPOS_UNDEFINED,
+      800,
+      600,
+      0
+    );
+    if (window == NULL) {
+      fprintf(stderr, "Eror initializing SDL Window: %s\n", SDL_GetError());
+      return 0;
+    }	
+    SDL_Renderer  *renderer = SDl_CreateRenderer(window);
+    if (renderer == NULL) {
+      fprintf(stderr, "Error initializing SDL Renderer: %s\n", SDL_GetError());
+      return 0;
+    }	
+    return 0;
+  }
 
 Something else we will want to do is to make sure we clean out our resources.  Before the final `return 0`, we can use SDL's methods to clean up, by placing these lines.
 
-```c
-SDL_DestroyRenderer(renderer);
-SDL_DestroyWindow(window);
-SDL_Quit();
-```
+  SDL_DestroyRenderer(renderer);
+  SDL_DestroyWindow(window);
+  SDL_Quit();
+  

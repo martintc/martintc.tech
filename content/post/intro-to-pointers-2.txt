@@ -10,10 +10,9 @@ We also covered that arrays were pretty much just a collection of memory address
 
 Not only can the computer do this math with memory addresses, a programmer can directly do this also. Take a look at the following source code and it’s output:
 
-```c
-#include <stdio.h>
+  #include <stdio.h>
 
-int main () {
+  int main () {
 
         int a[] = {1, 2, 3, 4};
 
@@ -26,15 +25,12 @@ int main () {
 
         return 0;
 
-}
-```
+  }
 
-```sh
-This is the address of a[0]: 0x7ffca894b0c0
-At address: 0x7ffca894b0c0 is 1
-At Address: 0x7ffca894b0d0 is -1466650176
-At Address: 0x7ffca894b0c4 is 2
-```
+  This is the address of a[0]: 0x7ffca894b0c0
+  At address: 0x7ffca894b0c0 is 1
+  At Address: 0x7ffca894b0d0 is -1466650176
+  At Address: 0x7ffca894b0c4 is 2
 
 In the code, a pointer variable is defined. A pointer variable is a variable of a type that points to an address of another variable. The type of a pointer variable is important, this tells the computer that we know that the memory location we are pointing at is 4 bytes in width, since an integer type (at least on my machine) is 4 bytes wide.
 

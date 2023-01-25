@@ -74,30 +74,28 @@ NOTE: Not so much for this tutorial, but it is important to pay attention to the
 
 To make building simple, here is a Makefile used for building the code and even flashing it.
 
-```sh
-CC = avr-gcc
-CC_FLAGS = -Os -DF_CPU16000000UL -mmcu=atmega328p
-LINK_FLAGS = -mmcu=atmega328p
-OBJ_CPY = avr-objcopy
-OBJ_CPY_FLAGS = -O ihex -R .eeprom
-AVR_DUDE = avrdude
-AVR_DUDE_FLAGS = -F -V -c arduino -p ATMEGA328P -P
+   CC = avr-gcc
+   CC_FLAGS = -Os -DF_CPU16000000UL -mmcu=atmega328p
+   LINK_FLAGS = -mmcu=atmega328p
+   OBJ_CPY = avr-objcopy
+   OBJ_CPY_FLAGS = -O ihex -R .eeprom
+   AVR_DUDE = avrdude
+   AVR_DUDE_FLAGS = -F -V -c arduino -p ATMEGA328P -P
 
 
-all: compile link cpy flash
+   all: compile link cpy flash
 
-compile:
-    ${CC} ${CC_FLAGS} -c -o hello.o hello.c
+   compile:
+	${CC} ${CC_FLAGS} -c -o hello.o hello.c
 
-link:
-    ${CC} ${LINK_FLAGS} hello.o -o hello
+   link:
+	${CC} ${LINK_FLAGS} hello.o -o hello
 
-cpy:
-    ${OBJ_CPY} ${OBJ_CPY_FLAGS} hello hello.hex
+   cpy:
+	${OBJ_CPY} ${OBJ_CPY_FLAGS} hello hello.hex
 
-flash:
-    sudo avrdude -F -V -c arduino -p ATMEGA328 -P /dev/tty.usbserial-1140 -b 57600 -U flash:w:hello.hex
-```
+   flash:
+	sudo avrdude -F -V -c arduino -p ATMEGA328 -P /dev/tty.usbserial-1140 -b 57600 -U flash:w:hello.hex
 
 Not going to spend a lot of time on this. What I will touch on is 'cpy' and 'flash.' In copy, we are using a program to take the resulting binary after compiling and linking to turn that binary into a hex format. This is what we will be uploading or flashing to the arduino. Next is 'flash.' This is using avr dude to flash it to our device. '57600' is the baud rate and this changes depening on the device. For the nano I had to use 57600, while with my Uno R3, I can use 9600.
 
@@ -109,25 +107,24 @@ You've got the arduino hooked up to your laptop from a USB port, how do you know
 
 Before we get to blinking, we need to first write some code to turn it on.
 
-```c
-#define PINB ((*(volatile unsigned char*)0x23))
-#define DDRB ((*(volatile unsigned char*)0x24))
-#define PORTB ((*(volatile unsigned char*)0x25))
 
-int main() {
+       #define PINB ((*(volatile unsigned char*)0x23))
+       #define DDRB ((*(volatile unsigned char*)0x24))
+       #define PORTB ((*(volatile unsigned char*)0x25))
 
-  DDRB = 0b00100000;
-  PORTB = 0b00100000;
+       int main() {
 
-  while(1);
+       	   DDRB = 0b00100000;
+	   PORTB = 0b00100000;
 
-  return 0;
-}
-```
+	   while(1);
+
+	   return 0;
+       }
 
 Pretty simple. At the top, we define precompile macros for convience. However, notice the value they are being set to.
 
-((*(volatile unsigned char*)0x23))
+       ((*(volatile unsigned char*)0x23))
 
 We are creating a pointer to an address in memory. Specially as noted above, to address 0x23, which is out PINB register. We are using `volatile unsigned char`. All these registers are 8 bits in length, which is the same size as a char on the AtMega328P. Volatile is there to force the compiler to tell the program to always look at that address. The reason why this is important is that some compiler optimizations may make assumptions and create shortcuts. Here, we do not want to create shortcuts. Most of the time, the compiler makes the best choice, but in embedded, sometimes the programmer does know better than the compiler.
 
@@ -141,31 +138,27 @@ The inifinite while loop at the end is necessary. If we don't have it, the progr
 
 With the arduino hooked up. If you can run make files and you have changed `/dev/tty.usbserial-1140` to the proper location your operating system has it at, you should just be able to type `make` at a terminal and it will compile and flash it to the device. Below is an example of my output as reference.
 
-```sh
-HelloWorld % make flash
-sudo avrdude -F -V -c arduino -p ATMEGA328 -P /dev/tty.usbserial-1140 -b 57600 -U flash:w:hello.hex
+     HelloWorld % make flash
+     sudo avrdude -F -V -c arduino -p ATMEGA328 -P /dev/tty.usbserial-1140 -b 57600 -U flash:w:hello.hex
 
-avrdude: AVR device initialized and ready to accept instructions
+     avrdude: AVR device initialized and ready to accept instructions
 
-Reading | ################################################## | 100% 0.00s
+     Reading | ################################################## | 100% 0.00s
 
-avrdude: Device signature = 0x1e950f (probably m328p)
-avrdude: Expected signature for ATmega328 is 1E 95 14
-avrdude: NOTE: "flash" memory has been specified, an erase cycle will be performed
+     avrdude: Device signature = 0x1e950f (probably m328p)
+     avrdude: Expected signature for ATmega328 is 1E 95 14
+     avrdude: NOTE: "flash" memory has been specified, an erase cycle will be performed
 	To disable this feature, specify the -D option.
-avrdude: erasing chip
-avrdude: reading input file "hello.hex"
-avrdude: input file hello.hex auto detected as Intel Hex
-avrdude: writing flash (140 bytes):
+     avrdude: erasing chip
+     avrdude: reading input file "hello.hex"
+     avrdude: input file hello.hex auto detected as Intel Hex
+     avrdude: writing flash (140 bytes):
 
-Writing | ################################################## | 100% 0.08s
+     Writing | ################################################## | 100% 0.08s
 
-avrdude: 140 bytes of flash written
+     avrdude: 140 bytes of flash written
 
-avrdude: safemode: Fuses OK (E:00, H:00, L:00)
+     avrdude: safemode: Fuses OK (E:00, H:00, L:00)
 
-avrdude done.  Thank you.
-```
-
-
+     avrdude done.  Thank you.
 

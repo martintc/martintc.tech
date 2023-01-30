@@ -1,2 +1,3 @@
-# blogc-example
-An example repository that can be used as base for a blogc website.
+# Martintc.tech
+
+Repository for my blog with is a statically generated site using blogc.

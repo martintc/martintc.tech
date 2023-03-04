@@ -145,3 +145,17 @@ Now it is ready to intrepet and we can do so by first checking the upper 4 bits 
             },
             _ => panic!("Instruction not valid: {}", inst),
         }
+
+This is essentially sort of like a decision tree happening or a state machine. Drilling down until we find the proper opcode to run.
+
+Now it is time to talk a little more about opcode formatting. In the program, I have kept the functions close to a representation of the spec. So as an example the instructions `0x8122` maps to `0x8xy2`. The `x` and `y` here specify registers we can pass in to the instruction. Looking at the spec of `0x8xy2`, we can see this resolves to `AND Vx, Vy`. We will perform a logical `AND` operation on the registers x and y, these registers can be any of the 16 general purpose registers. 
+
+  // and - bit wise an on rgisters vx and vy with the result going into vx
+  // 8xy2
+  pub fn op_8xy2(&mut self, inst: u16) {
+      let vx = ((inst & 0x0f00) >> 8) as usize;
+      let vy = ((inst & 0x00f0) >> 4) as usize;
+      self.reg[vx] &= self.reg[vy];
+  }
+
+Looking at the instruction above the `0x8122` we pass the full 16-bit instruction. Now we seperate out the `x` and `y` registers using some bitewise operations. Then we perform the logical `AND`.

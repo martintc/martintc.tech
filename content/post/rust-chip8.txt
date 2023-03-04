@@ -159,3 +159,9 @@ Now it is time to talk a little more about opcode formatting. In the program, I 
   }
 
 Looking at the instruction above the `0x8122` we pass the full 16-bit instruction. Now we seperate out the `x` and `y` registers using some bitewise operations. Then we perform the logical `AND`.
+
+From there, I think that is enough information on how the code itself works. Now I will talk about the experience of writing it in Rust.
+
+First, unit testing came in handy. As you notice, most of the `cpu.rs` file isn't event code for implementing the emulator, most of it (as of this writing 900 LOC) is dedicated to writing unit tests. which helped troubleshoot. It can also be a good resource to understand how it works since I hand write the roms with instructions and performs tests on them.
+
+One of my biggest snags was forgetting some of Rust's safety features. So it would mess up the emulator because Rust protects against arthimetic overflow. This is why in some implementations of instructions, you see me upcast everything to `u16` then downcase to `u8` at the end. 

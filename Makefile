@@ -10,6 +10,8 @@ POSTS_PER_PAGE = 10
 POSTS_PER_PAGE_ATOM = 10
 
 POSTS = \
+	rust-chip8 \
+	ports-reading-docs \
 	looking-at-basic-ravenport-tools \
 	ravenports-simple-port-dasm \
 	ravenports-dwm \
